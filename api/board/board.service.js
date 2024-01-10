@@ -25,13 +25,13 @@ async function query() {
 
 async function add(board) {
   const boardToAdd = {
-    title: board.title,
-    createdBy: board.createdBy,
-    labels: board.labels,
-    members: board.members,
-    groups: board.groups,
-    activities: board.activities,
-    cmpsOrder: board.cmpsOrder,
+    title: board.title || '',
+    createdBy: board.createdBy || {},
+    labels: board.labels || [],
+    members: board.members || [],
+    groups: board.groups || [],
+    activities: board.activities || [],
+    cmpsOrder: board.cmpsOrder || [],
   }
   try {
     const collection = await dbService.getCollection('board')
@@ -45,13 +45,13 @@ async function add(board) {
 
 async function update(board) {
   const boardToUpdate = {
-    title: board.title,
-    createdBy: board.createdBy,
-    labels: board.labels,
-    members: board.members,
-    groups: board.groups,
-    activities: board.activities,
-    cmpsOrder: board.cmpsOrder,
+    title: board.title || '',
+    createdBy: board.createdBy || {},
+    labels: board.labels || [],
+    members: board.members || [],
+    groups: board.groups || [],
+    activities: board.activities || [],
+    cmpsOrder: board.cmpsOrder || [],
   }
   try {
     const collection = await dbService.getCollection('board')
