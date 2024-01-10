@@ -44,7 +44,6 @@ export async function updateGroup(req, res) {
 
 export async function removeGroup(req, res) {
   const { boardId, groupId } = req.params
-  console.log(boardId, groupId)
   try {
     await groupService.remove(boardId, groupId)
     res.send(groupId)

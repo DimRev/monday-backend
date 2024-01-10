@@ -11,18 +11,6 @@ export const taskService = {
   remove,
 }
 
-// async function query() {
-//   console.log('test')
-//   try {
-//     const collection = await dbService.getCollection('board')
-//     const columns = collection.find().toArray()
-//     return columns
-//   } catch (err) {
-//     loggerService.error('B.S | Could not find columns', err)
-//     throw err
-//   }
-// }
-
 async function add(boardId, groupId, task) {
   const taskToAdd = {
     title: task.title,
@@ -81,20 +69,18 @@ async function update(boardId, groupId, taskId, task) {
 }
 
 async function remove(boardId, groupId, taskId) {
-  console.log(boardId, taskId)
   try {
     const collection = await dbService.getCollection('board')
     const result = await collection.updateOne(
-      { _id: new ObjectId(boardId) },
-      { $pull: { tasks: { id: taskId } } }
+      { _id: new ObjectId(boardId), 'groups.id': groupId },
+      { $pull: { 'groups.$.tasks': { id: taskId } } }
     )
-    console.log(result)
     if (result.modifiedCount === 0)
-      throw `Could not remove TaskId[${taskId}] in GroupId[${groupId}] of from BoardId[${boardId}]`
+      throw `Could not remove TaskId[${taskId}] in GroupId[${groupId}] from BoardId[${boardId}]`
     return taskId
   } catch (err) {
     loggerService.error(
-      `B.S | Could not remove task ${taskId} from group${groupId} in board ${boardId}`,
+      `B.S | Could not remove task ${taskId} from group ${groupId} in board ${boardId}`,
       err
     )
     throw err

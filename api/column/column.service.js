@@ -11,18 +11,6 @@ export const columnService = {
   remove,
 }
 
-// async function query() {
-//   console.log('test')
-//   try {
-//     const collection = await dbService.getCollection('board')
-//     const columns = collection.find().toArray()
-//     return columns
-//   } catch (err) {
-//     loggerService.error('B.S | Could not find columns', err)
-//     throw err
-//   }
-// }
-
 async function add(boardId, column) {
   const columnToAdd = {
     type: column.type || '',

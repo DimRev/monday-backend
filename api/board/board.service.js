@@ -69,17 +69,12 @@ async function update(board) {
 async function updateAll(boards) {
   try {
     const collection = await dbService.getCollection('board')
-
-    // Delete all documents in the collection
     await collection.deleteMany({})
 
     const boardsToAdd = boards.map((board) => {
       return { ...board, _id: new ObjectId(board._id) }
     })
-    // Insert the new documents from the boards array
     const result = await collection.insertMany(boardsToAdd)
-
-    console.log(`${result.insertedCount} boards replaced successfully.`)
     return boardsToAdd
   } catch (err) {
     loggerService.error('B.S | Could not replace all boards', err)

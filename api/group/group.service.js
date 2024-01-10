@@ -11,17 +11,6 @@ export const groupService = {
   remove,
 }
 
-// async function query() {
-//   console.log('test')
-//   try {
-//     const collection = await dbService.getCollection('board')
-//     const columns = collection.find().toArray()
-//     return columns
-//   } catch (err) {
-//     loggerService.error('B.S | Could not find columns', err)
-//     throw err
-//   }
-// }
 
 async function add(boardId, group) {
   const groupToAdd = {
@@ -76,14 +65,12 @@ async function update(boardId, groupId, group) {
 }
 
 async function remove(boardId, groupId) {
-  console.log(boardId, groupId)
   try {
     const collection = await dbService.getCollection('board')
     const result = await collection.updateOne(
       { _id: new ObjectId(boardId) },
       { $pull: { groups: { id: groupId } } }
     )
-    console.log(result)
     if (result.modifiedCount === 0)
       throw `Could not remove GroupId[${groupId}] from BoardId[${boardId}]`
     return groupId
