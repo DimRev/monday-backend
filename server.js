@@ -32,6 +32,15 @@ if (process.env.NODE_ENV === 'production') {
 import { boardRoutes } from './api/board/board.routes.js'
 app.use('/api/board', boardRoutes)
 
+import { columnRoutes } from './api/column/column.routes.js'
+app.use('/api/column', columnRoutes)
+
+import { groupRoutes } from './api/group/group.routes.js'
+app.use('/api/group', groupRoutes)
+
+import { taskRoutes } from './api/task/task.routes.js'
+app.use('/api/task', taskRoutes)
+
 
 const PORT = process.env.PORT || 3030
 app.listen(PORT, () =>
