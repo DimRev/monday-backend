@@ -69,7 +69,6 @@ async function update(boardId, columnId, column) {
 }
 
 async function remove(boardId, columnId) {
-  console.log(boardId, columnId)
   try {
     if (!boardId) throw `missing boardId : ${boardId}`
     if (!columnId) throw `missing columnId : ${columnId}`
@@ -78,7 +77,6 @@ async function remove(boardId, columnId) {
       { _id: new ObjectId(boardId) },
       { $pull: { cmpsOrder: { id: columnId } } }
     )
-    console.log(result)
     if (result.modifiedCount === 0)
       throw `Could not remove ColumnId[${columnId}] from BoardId[${boardId}]`
     return columnId

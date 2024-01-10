@@ -1,7 +1,7 @@
-import { loggerService } from "../../services/logger.service.js";
-import { boardService } from "./board.service.js"
+import { loggerService } from '../../services/logger.service.js'
+import { boardService } from './board.service.js'
 
-export async function getBoards(req, res){
+export async function getBoards(req, res) {
   try {
     loggerService.debug('**Getting boards**')
     const boards = await boardService.query()
@@ -12,8 +12,8 @@ export async function getBoards(req, res){
   }
 }
 
-export async function addBoard(req,res){
-  const { board } = req.body
+export async function addBoard(req, res) {
+  const board = req.body
   const boardToAdd = board
   try {
     const addedBoard = await boardService.add(boardToAdd)
@@ -24,8 +24,8 @@ export async function addBoard(req,res){
   }
 }
 
-export async function updateBoard(req,res){
-  const { board } = req.body
+export async function updateBoard(req, res) {
+  const board = req.body
   const boardToUpdate = board
   try {
     const updatedBoard = await boardService.update(boardToUpdate)
@@ -36,7 +36,18 @@ export async function updateBoard(req,res){
   }
 }
 
-export async function removeBoard(req,res){
+export async function updateBoards(req, res) {
+  const boardsToUpdate = [...req.body]
+  try {
+    const updatedBoards = await boardService.updateAll(boardsToUpdate)
+    res.send(updatedBoards)
+  } catch (err) {
+    loggerService.error('B.C | Error adding boards ', err)
+    res.status(400).send('Could not update boards')
+  }
+}
+
+export async function removeBoard(req, res) {
   const boardId = req.params.boardId
   try {
     await boardService.remove(boardId)

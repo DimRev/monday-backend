@@ -8,11 +8,11 @@ export const boardService = {
   query,
   add,
   update,
+  updateAll,
   remove,
 }
 
 async function query() {
-  console.log('test')
   try {
     const collection = await dbService.getCollection('board')
     const boards = collection.find().toArray()
@@ -62,6 +62,27 @@ async function update(board) {
     return boardToUpdate
   } catch (err) {
     loggerService.error('B.S | Could not update board', err)
+    throw err
+  }
+}
+
+async function updateAll(boards) {
+  try {
+    const collection = await dbService.getCollection('board')
+
+    // Delete all documents in the collection
+    await collection.deleteMany({})
+
+    const boardsToAdd = boards.map((board) => {
+      return { ...board, _id: new ObjectId(board._id) }
+    })
+    // Insert the new documents from the boards array
+    const result = await collection.insertMany(boardsToAdd)
+
+    console.log(`${result.insertedCount} boards replaced successfully.`)
+    return boardsToAdd
+  } catch (err) {
+    loggerService.error('B.S | Could not replace all boards', err)
     throw err
   }
 }

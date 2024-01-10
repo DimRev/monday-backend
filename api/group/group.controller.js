@@ -15,7 +15,8 @@ import { groupService } from './group.service.js'
 
 export async function addGroup(req, res) {
   const { boardId, group } = req.body
-  const groupToAdd = group
+
+  const groupToAdd = { ...group }
   try {
     const addedGroup = await groupService.add(boardId, groupToAdd)
     res.send(addedGroup)
@@ -43,6 +44,7 @@ export async function updateGroup(req, res) {
 
 export async function removeGroup(req, res) {
   const { boardId, groupId } = req.params
+  console.log(boardId, groupId)
   try {
     await groupService.remove(boardId, groupId)
     res.send(groupId)
@@ -51,4 +53,3 @@ export async function removeGroup(req, res) {
     res.status(400).send('Could not remove group')
   }
 }
-

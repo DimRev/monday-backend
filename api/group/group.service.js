@@ -25,26 +25,27 @@ export const groupService = {
 
 async function add(boardId, group) {
   const groupToAdd = {
-    id: utilService.makeId(),
+    id: group.id || utilService.makeId(),
     title: group.title || '',
     archivedAt: group.archivedAt || Date.now(),
     tasks: group.tasks || [],
-  }
-  groupToAdd.id = utilService.makeId()
-  try {
-    if (!boardId) throw `missing boardId : ${boardId}`
+    style: group.style || {color: '#0000ff'}
+  };
 
-    const collection = await dbService.getCollection('board')
+  try {
+    const collection = await dbService.getCollection('board');
     const result = await collection.updateOne(
-      { _id: new ObjectId(boardId) },
-      { $push: { groups: groupToAdd } }
-    )
-    if (result.matchedCount === 0)
-      throw `Could not add group to BoardId[${boardId}]`
-    return groupToAdd
+      { '_id': new ObjectId(boardId) },
+      { $push: { 'groups': groupToAdd } }
+    );
+    if (result.matchedCount === 0) {
+      throw `Could not add group to BoardId[${boardId}]`;
+    }
+
+    return groupToAdd;
   } catch (err) {
-    loggerService.error('B.S | Could not add group', err)
-    throw err
+    loggerService.error('B.S | Could not add group', err);
+    throw err;
   }
 }
 
@@ -54,6 +55,7 @@ async function update(boardId, groupId, group) {
     title: group.title || '',
     archivedAt: group.archivedAt || Date.now(),
     tasks: group.tasks || [],
+    style: group.style || {color: '#0000ff'}
   }
   try {
     if (!boardId) throw `missing boardId : ${boardId}`
