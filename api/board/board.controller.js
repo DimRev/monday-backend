@@ -38,7 +38,6 @@ export async function updateBoard(req,res){
 
 export async function removeBoard(req,res){
   const boardId = req.params.boardId
-  console.log(boardId)
   try {
     await boardService.remove(boardId)
     res.send(boardId)

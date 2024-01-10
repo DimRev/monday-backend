@@ -1,16 +1,16 @@
 import { loggerService } from '../../services/logger.service.js'
 import { columnService } from './column.service.js'
 
-export async function getColumns(req, res) {
-  try {
-    loggerService.debug('**Getting columns**')
-    const columns = await columnService.query()
-    res.send(columns)
-  } catch (err) {
-    loggerService.error('B.C | Error getting columns ', err)
-    res.status(400).send('Could not get columns')
-  }
-}
+// export async function getColumns(req, res) {
+//   try {
+//     loggerService.debug('**Getting columns**')
+//     const columns = await columnService.query()
+//     res.send(columns)
+//   } catch (err) {
+//     loggerService.error('B.C | Error getting columns ', err)
+//     res.status(400).send('Could not get columns')
+//   }
+// }
 
 export async function addColumn(req, res) {
   const { boardId, column } = req.body

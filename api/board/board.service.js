@@ -68,6 +68,7 @@ async function update(board) {
 
 async function remove(boardId) {
   try {
+    if (!boardId) throw `missing boardId : ${boardId}`
     const collection = await dbService.getCollection('board')
     await collection.deleteOne({ _id: new ObjectId(boardId) })
   } catch (err) {

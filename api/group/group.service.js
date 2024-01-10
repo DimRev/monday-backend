@@ -4,7 +4,7 @@ import { utilService } from '../../services/utils.service.js'
 import { loggerService } from '../../services/logger.service.js'
 import { dbService } from '../../services/db.service.js'
 
-export const columnService = {
+export const groupService = {
   // query,
   add,
   update,
@@ -23,68 +23,71 @@ export const columnService = {
 //   }
 // }
 
-async function add(boardId, column) {
-  const columnToAdd = {
-    type: column.type || '',
-    title: column.title || '',
+async function add(boardId, group) {
+  const groupToAdd = {
+    id: utilService.makeId(),
+    title: group.title || '',
+    archivedAt: group.archivedAt || Date.now(),
+    tasks: group.tasks || [],
   }
-  columnToAdd.id = utilService.makeId()
+  groupToAdd.id = utilService.makeId()
   try {
     if (!boardId) throw `missing boardId : ${boardId}`
+
     const collection = await dbService.getCollection('board')
     const result = await collection.updateOne(
       { _id: new ObjectId(boardId) },
-      { $push: { cmpsOrder: columnToAdd } }
+      { $push: { groups: groupToAdd } }
     )
     if (result.matchedCount === 0)
-      throw `Could not add column to BoardId[${boardId}]`
-    return columnToAdd
+      throw `Could not add group to BoardId[${boardId}]`
+    return groupToAdd
   } catch (err) {
-    loggerService.error('B.S | Could not add column', err)
+    loggerService.error('B.S | Could not add group', err)
     throw err
   }
 }
 
-async function update(boardId, columnId, column) {
-  const columnToUpdate = {
-    type: column.type || '',
-    title: column.title || '',
-    id: column.id || '',
+async function update(boardId, groupId, group) {
+  const groupToUpdate = {
+    id: group.id,
+    title: group.title || '',
+    archivedAt: group.archivedAt || Date.now(),
+    tasks: group.tasks || [],
   }
   try {
     if (!boardId) throw `missing boardId : ${boardId}`
-    if (!columnId) throw `missing columnId : ${columnId}`
+    if (!groupId) throw `missing groupId : ${groupId}`
+
     const collection = await dbService.getCollection('board')
     const result = await collection.updateOne(
-      { _id: new ObjectId(boardId), 'cmpsOrder.id': columnId },
-      { $set: { 'cmpsOrder.$.title': columnToUpdate.title } }
+      { _id: new ObjectId(boardId), 'groups.id': groupId },
+      { $set: { 'groups.$': groupToUpdate } }
     )
     if (result.matchedCount === 0)
-      throw `Could not update ColumnId[${columnId}] in BoardId[${boardId}]`
-    return columnToUpdate
+      throw `Could not update GroupId[${groupId}] in BoardId[${boardId}]`
+    return groupToUpdate
   } catch (err) {
-    loggerService.error('B.S | Could not update column', err)
+    loggerService.error('B.S | Could not update group', err)
     throw err
   }
 }
 
-async function remove(boardId, columnId) {
-  console.log(boardId, columnId)
+async function remove(boardId, groupId) {
+  console.log(boardId, groupId)
   try {
-    if (!boardId) throw `missing boardId : ${boardId}`
-    if (!columnId) throw `missing columnId : ${columnId}`
     const collection = await dbService.getCollection('board')
     const result = await collection.updateOne(
       { _id: new ObjectId(boardId) },
-      { $pull: { cmpsOrder: { id: columnId } } }
+      { $pull: { groups: { id: groupId } } }
     )
     console.log(result)
     if (result.modifiedCount === 0)
-      throw `Could not remove ColumnId[${columnId}] from BoardId[${boardId}]`
-    return columnId
+      throw `Could not remove GroupId[${groupId}] from BoardId[${boardId}]`
+    return groupId
   } catch (err) {
     loggerService.error(
-      `B.S | Could not remove column ${columnId} from board ${boardId}`,
+      `B.S | Could not remove group ${groupId} from board ${boardId}`,
       err
     )
     throw err
