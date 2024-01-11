@@ -1,5 +1,5 @@
-import { dbService } from '../../service/db.service.js'
-import { loggerService } from '../../service/logger.service.js'
+import { dbService } from '../../services/db.service.js'
+import { loggerService } from '../../services/logger.service.js'
 
 import mongodb from 'mongodb'
 const { ObjectId } = mongodb

@@ -2,7 +2,7 @@ import Cryptr from 'cryptr'
 import bcrypt from 'bcrypt'
 
 import { userService } from '../user/user.service.js'
-import { loggerService } from '../../service/logger.service.js'
+import { loggerService } from '../../services/logger.service.js'
 
 export const authService = {
     signup,
@@ -26,7 +26,7 @@ async function login(username, password) {
     return user
 }
 
-async function signup(username, password, fullname) {
+async function signup(username, password, fullname, imgUrl) {
     const saltRounds = 10
 
     loggerService.debug(`auth.service - signup with username: ${username}, fullname: ${fullname}`)

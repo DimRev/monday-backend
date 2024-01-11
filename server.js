@@ -2,18 +2,20 @@ import express from 'express'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
 import path from 'path'
-
+import http from 'http'
 
 import { loggerService } from './services/logger.service.js'
 loggerService.info('server.js loaded...')
 
 const app = express()
+const server = http.createServer(app)
 
 //Express App Config
 app.use(cookieParser())
 app.use(express.json())
 app.use(express.static('public'))
 
+console.log(process.env.NODE_ENV)
 
 if (process.env.NODE_ENV === 'production') {
   app.use(express.static(path.resolve('public')))
@@ -29,20 +31,26 @@ if (process.env.NODE_ENV === 'production') {
   app.use(cors(corsOptions))
 }
 
+
 import { boardRoutes } from './api/board/board.routes.js'
-app.use('/api/board', boardRoutes)
-
 import { columnRoutes } from './api/column/column.routes.js'
-app.use('/api/column', columnRoutes)
-
 import { groupRoutes } from './api/group/group.routes.js'
-app.use('/api/group', groupRoutes)
-
 import { taskRoutes } from './api/task/task.routes.js'
+import { authRoutes } from './api/auth/auth.routes.js'
+import { setupSocketAPI } from './services/socket.service.js'
+
+app.use('/api/board', boardRoutes)
+app.use('/api/column', columnRoutes)
+app.use('/api/group', groupRoutes)
 app.use('/api/task', taskRoutes)
+app.use('/api/auth', authRoutes)
+
+setupSocketAPI(server)
 
 
-const PORT = process.env.PORT || 3030
-app.listen(PORT, () =>
-  loggerService.info(`Server listening on port http://127.0.0.1:${PORT}/`)
-)
+
+
+const port = process.env.PORT || 3030
+server.listen(port, () => {
+    loggerService.info('Server is running on port: ' + port)
+})
