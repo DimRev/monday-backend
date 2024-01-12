@@ -12,6 +12,17 @@ export async function getBoards(req, res) {
   }
 }
 
+export async function getBoard(req, res) {
+  const {boardId} = req.params
+  try {
+    const board = await boardService.getById(boardId)
+    res.send(board)
+  } catch (err) {
+    loggerService.error('B.C | Error getting board', err)
+    res.status(400).send('Could not get board')
+  }
+}
+
 export async function addBoard(req, res) {
   const board = req.body
   const boardToAdd = board

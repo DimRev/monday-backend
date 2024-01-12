@@ -1,4 +1,5 @@
 import { loggerService } from '../../services/logger.service.js'
+import { socketService } from '../../services/socket.service.js'
 import { columnService } from './column.service.js'
 
 // export async function getColumns(req, res) {
@@ -15,8 +16,15 @@ import { columnService } from './column.service.js'
 export async function addColumn(req, res) {
   const { boardId, column } = req.body
   const columnToAdd = column
+  const userId = req.loggedinUser
   try {
     const addedColumn = await columnService.add(boardId, columnToAdd)
+    socketService.broadcast({
+      type: 'add-column',
+      data: { boardId, addedColumn },
+      room: boardId,
+      userId,
+    })
     res.send(addedColumn)
   } catch (err) {
     loggerService.error('B.C | Error adding column ', err)
@@ -27,12 +35,19 @@ export async function addColumn(req, res) {
 export async function updateColumn(req, res) {
   const { boardId, columnId, column } = req.body
   const columnToUpdate = column
+  const userId = req.loggedinUser
   try {
     const updatedColumn = await columnService.update(
       boardId,
       columnId,
       columnToUpdate
     )
+    socketService.broadcast({
+      type: 'update-column',
+      data: { boardId, columnId, updatedColumn },
+      room: boardId,
+      userId,
+    })
     res.send(updatedColumn)
   } catch (err) {
     loggerService.error('B.C | Error adding column ', err)
@@ -42,8 +57,15 @@ export async function updateColumn(req, res) {
 
 export async function removeColumn(req, res) {
   const { boardId, columnId } = req.params
+  const userId = req.loggedinUser
   try {
     await columnService.remove(boardId, columnId)
+    socketService.broadcast({
+      type: 'remove-column',
+      data: { boardId, columnId },
+      room: boardId,
+      userId,
+    })
     res.send(columnId)
   } catch (err) {
     loggerService.error('B.C | Error removing column ', err)

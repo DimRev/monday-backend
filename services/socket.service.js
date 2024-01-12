@@ -15,51 +15,31 @@ export function setupSocketAPI(server) {
       loggerService.info(`Socket disconnected [id: ${socket.id}]`)
     })
 
-    socket.on('chat-set-topic', (topic) => {
-      if (socket.myTopic === topic) return
-      if (socket.myTopic) {
-        socket.leave(socket.myTopic)
+    socket.on('workspace-set-board', (topic) => {
+      if (socket.onBoard === topic) return
+      if (socket.onBoard) {
+        socket.leave(socket.onBoard)
         loggerService.info(
-          `Socket is leaving topic ${socket.myTopic} [id: ${socket.id}]`
+          `User:${socket.userId} LEFT board:${socket.onBoard} [Socket id: ${socket.id}]`
         )
       }
+      loggerService.info(`User:${socket.userId} JOINED board:${topic} [Socket id: ${socket.id}]`)
       socket.join(topic)
-      socket.myTopic = topic
+      socket.onBoard = topic
     })
 
-    socket.on('chat-send-msg', (msg) => {
-      loggerService.info(
-        `New chat msg from socket [id: ${socket.id}], emitting to topic ${socket.myTopic}`
-      )
-      // emits to all sockets:
-      // gIo.emit('chat addMsg', msg)
-      // emits only to sockets in the same room except the sender!
-      socket.broadcast.to(socket.myTopic).emit('chat-add-msg', msg)
-    })
+      socket.on('set-user-socket', (userId) => {
+        loggerService.info(
+          `Setting socket.userId = ${userId} for socket [id: ${socket.id}]`
+        )
+        socket.userId = userId
+        console.log('socket.userId:',socket.userId)
+      })
 
-    socket.on('user-watch', (userId) => {
-      loggerService.info(
-        `user-watch from socket [id: ${socket.id}], on user ${userId}`
-      )
-      socket.join('watching:' + userId)
-    })
-
-    socket.on('set-user-socket', (userId) => {
-      loggerService.info(
-        `Setting socket.userId = ${userId} for socket [id: ${socket.id}]`
-      )
-      socket.userId = userId
-    })
-
-    socket.on('unset-user-socket', () => {
-      loggerService.info(`Removing socket.userId for socket [id: ${socket.id}]`)
-      delete socket.userId
-    })
-
-    socket.on('board-watch', (boardId) => {
-      loggerService.info(`Socket joining board : ${boardId} [id: ${socket.id}]`)
-      socket.join('board:' + boardId)
-    })
+      socket.on('unset-user-socket', () => {
+        loggerService.info(`Removing socket.userId for socket [id: ${socket.id}]`)
+        delete socket.userId
+      })
   })
 }
 

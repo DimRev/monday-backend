@@ -6,6 +6,7 @@ import { dbService } from '../../services/db.service.js'
 
 export const boardService = {
   query,
+  getById,
   add,
   update,
   updateAll,
@@ -20,6 +21,16 @@ async function query() {
   } catch (err) {
     loggerService.error('B.S | Could not find boards', err)
     throw err
+  }
+}
+
+async function getById(boardId){
+  try {
+    const collection = await dbService.getCollection('board')
+    const board = collection.find({_id: new ObjectId(boardId)}).toArray()
+    return board
+  } catch (err) {
+    loggerService.error('B.S | Could not find board', err)
   }
 }
 
