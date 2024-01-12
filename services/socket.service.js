@@ -11,6 +11,7 @@ export function setupSocketAPI(server) {
   })
   gIo.on('connection', (socket) => {
     loggerService.info(`New connected socket [id: ${socket.id}]`)
+
     socket.on('disconnect', (socket) => {
       loggerService.info(`Socket disconnected [id: ${socket.id}]`)
     })
@@ -23,23 +24,25 @@ export function setupSocketAPI(server) {
           `User:${socket.userId} LEFT board:${socket.onBoard} [Socket id: ${socket.id}]`
         )
       }
-      loggerService.info(`User:${socket.userId} JOINED board:${topic} [Socket id: ${socket.id}]`)
+      loggerService.info(
+        `User:${socket.userId} JOINED board:${topic} [Socket id: ${socket.id}]`
+      )
       socket.join(topic)
       socket.onBoard = topic
     })
 
-      socket.on('set-user-socket', (userId) => {
-        loggerService.info(
-          `Setting socket.userId = ${userId} for socket [id: ${socket.id}]`
-        )
-        socket.userId = userId
-        console.log('socket.userId:',socket.userId)
-      })
+    socket.on('set-user-socket', (userId) => {
+      loggerService.info(
+        `Setting socket.userId = ${userId} for socket [id: ${socket.id}]`
+      )
+      socket.userId = userId
+      console.log('socket.userId:', socket.userId)
+    })
 
-      socket.on('unset-user-socket', () => {
-        loggerService.info(`Removing socket.userId for socket [id: ${socket.id}]`)
-        delete socket.userId
-      })
+    // socket.on('unset-user-socket', () => {
+      // loggerService.info(`Removing socket.userId for socket [id: ${socket.id}]`)
+      // delete socket.userId
+    // })
   })
 }
 
@@ -86,8 +89,10 @@ async function broadcast({ type, data, room = null, userId }) {
 }
 
 async function _getUserSocket(userId) {
+  console.log('_gettingUserSocket',userId)
   const sockets = await _getAllSockets()
   const socket = sockets.find((s) => s.userId === userId)
+  _printSockets(socket)
   return socket
 }
 async function _getAllSockets() {

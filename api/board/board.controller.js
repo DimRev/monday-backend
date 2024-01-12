@@ -2,6 +2,7 @@ import { loggerService } from '../../services/logger.service.js'
 import { boardService } from './board.service.js'
 
 export async function getBoards(req, res) {
+  const userId = req.loggedinUser
   try {
     loggerService.debug('**Getting boards**')
     const boards = await boardService.query()

@@ -14,6 +14,7 @@ export const taskService = {
 async function add(boardId, groupId, task) {
   const taskToAdd = {
     title: task.title,
+    activity: []
   }
   taskToAdd.id = utilService.makeId()
   try {
@@ -44,7 +45,6 @@ async function update(boardId, groupId, taskId, task) {
     if (!boardId) throw `missing boardId : ${boardId}`
     if (!groupId) throw `missing groupId : ${groupId}`
     if (!taskId) throw `missing taskId : ${taskId}`
-
     const collection = await dbService.getCollection('board')
     const result = await collection.updateOne(
       {

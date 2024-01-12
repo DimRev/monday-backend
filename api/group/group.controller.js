@@ -3,21 +3,10 @@ import { socketService } from '../../services/socket.service.js'
 import { utilService } from '../../services/utils.service.js'
 import { groupService } from './group.service.js'
 
-// export async function getGroups(req, res) {
-//   try {
-//     loggerService.debug('**Getting groups**')
-//     const groups = await columnService.query()
-//     res.send(groups)
-//   } catch (err) {
-//     loggerService.error('B.C | Error getting groups ', err)
-//     res.status(400).send('Could not get groups')
-//   }
-// }
-
 export async function addGroup(req, res) {
   const { boardId, group } = req.body
   const groupToAdd = { ...group }
-  const userId = req.loggedinUser
+  const user = req.loggedinUser
 
   try {
     const addedGroup = await groupService.add(boardId, groupToAdd)
@@ -25,7 +14,7 @@ export async function addGroup(req, res) {
       type: 'add-group',
       data: { boardId, group: addedGroup },
       room: boardId,
-      userId,
+      userId: user._id,
     })
     res.send(addedGroup)
   } catch (err) {
@@ -37,7 +26,7 @@ export async function addGroup(req, res) {
 export async function updateGroup(req, res) {
   const { boardId, groupId, group } = req.body
   const groupToUpdate = { ...group }
-  const userId = req.loggedinUser
+  const user = req.loggedinUser
 
   try {
     const updatedGroup = await groupService.update(
@@ -49,7 +38,7 @@ export async function updateGroup(req, res) {
       type: 'update-group',
       data: { boardId, groupId, group: updatedGroup },
       room: boardId,
-      userId,
+      userId: user._id,
     })
     res.send(updatedGroup)
   } catch (err) {
@@ -60,14 +49,14 @@ export async function updateGroup(req, res) {
 
 export async function removeGroup(req, res) {
   const { boardId, groupId } = req.params
-  const userId = req.loggedinUser
+  const user = req.loggedinUser
   try {
     await groupService.remove(boardId, groupId)
     socketService.broadcast({
       type: 'remove-group',
       data: { boardId, groupId },
       room: boardId,
-      userId,
+      userId: user._id,
     })
     res.send(groupId)
   } catch (err) {
