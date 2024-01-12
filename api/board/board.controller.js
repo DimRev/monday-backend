@@ -2,6 +2,7 @@ import { loggerService } from '../../services/logger.service.js'
 import { boardService } from './board.service.js'
 
 export async function getBoards(req, res) {
+  const userId = req.loggedinUser
   try {
     loggerService.debug('**Getting boards**')
     const boards = await boardService.query()
@@ -9,6 +10,17 @@ export async function getBoards(req, res) {
   } catch (err) {
     loggerService.error('B.C | Error getting boards ', err)
     res.status(400).send('Could not get boards')
+  }
+}
+
+export async function getBoard(req, res) {
+  const {boardId} = req.params
+  try {
+    const board = await boardService.getById(boardId)
+    res.send(board)
+  } catch (err) {
+    loggerService.error('B.C | Error getting board', err)
+    res.status(400).send('Could not get board')
   }
 }
 

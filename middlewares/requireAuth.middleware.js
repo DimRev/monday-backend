@@ -1,5 +1,5 @@
-import { loggerService } from "../service/logger.service.js"
-import { authService } from '../api/auth/auth.service.js'
+import { loggerService } from "../services/logger.service.js"
+import { authService } from "../api/auth/auth.service.js"
 
 export async function requireAuth(req, res, next) {
     if (!req?.cookies?.loginToken) {
