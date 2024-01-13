@@ -24,10 +24,10 @@ async function query() {
   }
 }
 
-async function getById(boardId){
+async function getById(boardId) {
   try {
     const collection = await dbService.getCollection('board')
-    const board = collection.find({_id: new ObjectId(boardId)}).toArray()
+    const board = collection.findOne({ _id: new ObjectId(boardId) })
     return board
   } catch (err) {
     loggerService.error('B.S | Could not find board', err)
