@@ -43,6 +43,7 @@ async function add(board) {
     groups: board.groups || [],
     activities: board.activities || [],
     cmpsOrder: board.cmpsOrder || [],
+    option: board.option || '',
   }
   try {
     const collection = await dbService.getCollection('board')
