@@ -38,7 +38,7 @@ async function add(board) {
   const boardToAdd = {
     title: board.title || '',
     createdBy: board.createdBy || {},
-    labels: board.labels || [],
+    labelsdef1: board.labelsdef1 || [],
     members: board.members || [],
     groups: board.groups || [],
     activities: board.activities || [],
@@ -58,18 +58,22 @@ async function update(board) {
   const boardToUpdate = {
     title: board.title || '',
     createdBy: board.createdBy || {},
-    labels: board.labels || [],
+    labelsdef1: board.labelsdef1 || [],
     members: board.members || [],
     groups: board.groups || [],
     activities: board.activities || [],
     cmpsOrder: board.cmpsOrder || [],
+    ...board
   }
+  // console.log(boardToUpdate)
+  delete boardToUpdate._id;
   try {
     const collection = await dbService.getCollection('board')
     await collection.updateOne(
       { _id: new ObjectId(board._id) },
       { $set: boardToUpdate }
     )
+    boardToUpdate._id = board._id
     return boardToUpdate
   } catch (err) {
     loggerService.error('B.S | Could not update board', err)
