@@ -3,11 +3,11 @@ import { socketService } from '../../services/socket.service.js'
 import { taskService } from './task.service.js'
 
 export async function addTask(req, res) {
-  const { boardId, groupId, task } = req.body
+  const { boardId, groupId, task, at } = req.body
   const taskToAdd = task
   const user = req.loggedinUser
   try {
-    const addedTask = await taskService.add(boardId, groupId, taskToAdd)
+    const addedTask = await taskService.add(boardId, groupId, taskToAdd, at)
     socketService.broadcast({
       type: 'add-task',
       data: { boardId, groupId, task: addedTask },

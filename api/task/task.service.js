@@ -11,10 +11,10 @@ export const taskService = {
   remove,
 }
 
-async function add(boardId, groupId, task) {
+async function add(boardId, groupId, task, at) {
   const taskToAdd = {
     title: task.title,
-    activity: []
+    activity: [],
   }
   taskToAdd.id = utilService.makeId()
   try {
@@ -24,7 +24,9 @@ async function add(boardId, groupId, task) {
     const collection = await dbService.getCollection('board')
     const result = await collection.updateOne(
       { _id: new ObjectId(boardId), 'groups.id': groupId },
-      { $push: { 'groups.$.tasks': taskToAdd } }
+      at === 'last'
+        ? { $push: { 'groups.$.tasks': taskToAdd } }
+        : { $push: { 'groups.$.tasks': { $each: [taskToAdd], $position: 0 } } }
     )
     if (result.matchedCount === 0)
       throw `Could not add task to GroupId[${groupId}] in BoardId[${boardId}]`
