@@ -44,6 +44,7 @@ async function add(board) {
     activities: board.activities || [],
     cmpsOrder: board.cmpsOrder || [],
     option: board.option || '',
+    style: board.style || {},
   }
   try {
     const collection = await dbService.getCollection('board')
