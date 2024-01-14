@@ -45,6 +45,20 @@ export async function updateTask(req, res) {
   }
 }
 
+export async function updateTasks(req, res) {
+  const { boardId, groupId, tasks } = req.body
+  const tasksToUpdate = tasks
+  const user = req.loggedinUser
+  try {
+    const updatedTasks = await taskService.updateAll(boardId, groupId, tasksToUpdate)
+    console.log(updatedTasks)
+    res.send(tasksToUpdate)
+  } catch (err) {
+    loggerService.error('B.C | Error adding task ', err)
+    res.status(400).send('Could not update task')
+  }
+}
+
 export async function removeTask(req, res) {
   const { boardId, groupId, taskId } = req.params
   const user = req.loggedinUser

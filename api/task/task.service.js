@@ -8,6 +8,7 @@ export const taskService = {
   // query,
   add,
   update,
+  updateAll,
   remove,
 }
 
@@ -65,6 +66,31 @@ async function update(boardId, groupId, taskId, task) {
   } catch (err) {
     loggerService.error('B.S | Could not update task', err)
     throw err
+  }
+}
+
+async function updateAll(boardId, groupId, tasks) {
+  const tasksToUpdate = [...tasks]
+  try {
+    if (!boardId) throw new Error(`Missing boardId: ${boardId}`);
+    if (!groupId) throw new Error(`Missing groupId: ${groupId}`);
+
+    const collection = await dbService.getCollection('board');
+
+    const filter = { _id: new ObjectId(boardId), 'groups.id': groupId };
+    const update = { $set: { 'groups.$.tasks': tasksToUpdate } };
+
+    const result = await collection.updateOne(filter, update);
+
+
+    if (result.modifiedCount === 0) {
+      throw new Error(`Board or Group not found for boardId: ${boardId}, groupId: ${groupId}`);
+    }
+
+    console.log(`Tasks updated successfully for boardId: ${boardId}, groupId: ${groupId}`);
+    return tasksToUpdate
+  } catch (err) {
+    console.error('Error updating tasks:', err.message);
   }
 }
 
