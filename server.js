@@ -51,6 +51,7 @@ setupSocketAPI(server)
 
 const port = process.env.PORT || 3030
 
+
 app.get('/**', (req, res) => {
   res.sendFile(path.resolve('public/index.html'))
 })
