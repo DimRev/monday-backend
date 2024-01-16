@@ -50,6 +50,11 @@ app.use('/api/user', userRoutes)
 setupSocketAPI(server)
 
 const port = process.env.PORT || 3030
+
+app.get('/**', (req, res) => {
+  res.sendFile(path.resolve('public/index.html'))
+})
+
 server.listen(port, () => {
   loggerService.info('Server is running on port: ' + port)
 })
