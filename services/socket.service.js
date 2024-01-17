@@ -98,6 +98,7 @@ async function _getUserSocket(userId) {
 async function _getAllSockets() {
   // return all Socket instances
   const sockets = await gIo.fetchSockets()
+  console.log(sockets)
   return sockets
 }
 
