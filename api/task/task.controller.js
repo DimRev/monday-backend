@@ -10,7 +10,7 @@ export async function addTask(req, res) {
     const addedTask = await taskService.add(boardId, groupId, taskToAdd, at)
     socketService.broadcast({
       type: 'add-task',
-      data: { boardId, groupId, task: addedTask },
+      data: { boardId, groupId, task: addedTask, at: at },
       room: boardId,
       userId: user._id,
     })
