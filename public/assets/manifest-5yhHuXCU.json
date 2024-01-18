@@ -6,11 +6,16 @@
   "display": "standalone",
   "form_factor": "wide",
   "background_color": "#fff",
-  "description": "Anotherday is a clone of monday",
+  "description": "Anotherday is a clone of monday made by Eden, Dima and Nave",
   "icons": [
     {
-      "src": "/src/assets/img/tabs/test.jpg",
-      "sizes": "225x225",
+      "src": "/src/assets/img/pwa-logo.png",
+      "sizes": "100x100",
+      "type": "image/png"
+    },
+    {
+      "src": "/src/assets/img/pwa-tasks-logo.png",
+      "sizes": "44x44",
       "type": "image/png"
     },
     {
